@@ -40,8 +40,6 @@ SPDX-License-Identifier: MIT
       <li> <a href="#spec--define-check">(define-check name predicate)</a>
       <li> <a href="#spec--declare-checked">(declare-checked name predicate) | (declare-checked (name (arg pred) ...) [=&gt; predicate])</a>
       <li> <a href="#spec--define-values-checked">(srfi 273) (define-values-checked (vars ...) (checks ...) form)</a>
-      <li> <a href="#spec--check-of">(check-of datum)</a>
-      <li> <a href="#spec--procedure-check-of">(procedure-check-of proc)</a>
       <li> <a href="#spec--check-patterns">Optimizable check patterns / combinators</a>
     </ol>
   </li>
@@ -62,9 +60,6 @@ SPDX-License-Identifier: MIT
   pre- and post-declaration of type / check with <a href="#spec--declare-checked"><code>declare-checked</code></a>;
   <a href="#spec--return-value">return value checks</a>
   in <code>lambda-checked</code>, <code>case-lambda-checked</code>, and <code>define-checked</code>;
-  the <a href="#spec--check-of"><code>check-of</code></a>
-  and <a href="#spec--procedure-check-of"><code>procedure-check-of</code></a>
-  procedures to derive a suitable check for a datum / procedure;
   and some optimizable checking patterns suggested to implementors.
 </p>
 
@@ -114,8 +109,7 @@ SPDX-License-Identifier: MIT
   <li> <code>declare-checked</code> syntax for pre-definition / post-definition / declaration of checks for a given procedure/variable. Matches Chicken Scheme <code>:</code> syntax and Common Lisp <code>declaim ftype</code> macro.
   <li> <code>define-values-checked</code> to match the <code>define-checked</code>
     and <a href="https://standards.scheme.org/r7rs-html5/index.html#define"><code>define</code></a> duality.
-  <li> Primitives to derive a suitable check for a given datum / procedure, <code>check-of</code> and <code>procedure-check-of</code>.
-  <li> Smarter pattern optimization to enable e.g. union types.
+  <li> Suggested pattern optimization to enable e.g. union types.
 </ul>
 
 <h2 id="specification">Specification</h2>
@@ -237,69 +231,6 @@ SPDX-License-Identifier: MIT
 Same as <code>define-values</code>, but makes sure the values returned by <var>form</var> abide by <var>checks</var>.
 Further symbol value modifications may be checked too.
 
-<h3 id="spec--check-of">(srfi 273) procedure (check-of datum)</h3>
-
-<p>
-  Returns a check the provided <var>datum</var> satisfies, as a quoted symbol or expression.
-  Returns <code>#f</code> if the check cannot be derived.
-  The returned value should be <a href="https://standards.scheme.org/r7rs-html5/index.html#eval"><code>eval</code></a>-uatable in the current <a href="https://standards.scheme.org/r7rs-html5/index.html#interaction-environment"><code>(interaction-environment)</code></a> to get the check procedure that the <var>datum</var> satisfies.
-  The precision to which the check is derived is not specified.
-</p>
-
-<p>
-  Conceptually similar to <code>type-of</code> and <code>typeof</code> of other languages
-  and type-fetching primitives of some Scheme implementations.
-</p>
-
-<pre>
-;; Any of these might return #f and still be compliant
-(check-of 3)
-;; =&gt; integer? or number? or exact? or exact-integer?
-(define-checked x (<a href="https://srfi.schemers.org/srfi-26/srfi-26.html">cut</a> <a href="https://standards.scheme.org/r7rs-html5/index.html#=">=</a> 3 &lt;&gt;) 3)
-(check-of x)
-;; =&gt; (cut = 3 &lt;&gt;) or number checks as above
-</pre>
-
-<h3 id="spec--procedure-check-of">(srfi 273) procedure (procedure-check-of proc)</h3>
-
-<p>
-  Accepts a procedure (as per <code>procedure?</code>)
-  Returns two values:
-</p>
-
-<ol>
-  <li> List of checks for arguments of <var>proc</var> as expressions / symbols / <code>#f</code> (if argument check cannot be determined.)
-    In case the procedure accepts rest arguments, the returned checks are only covering required arguments.
-    Checking for rest / optional argument presence is beyond this SRFI.
-  <li> List of checks for return values of <var>proc</var>.
-</ol>
-
-<p>
-  Either of lists can be <code>#f</code>.
-</p>
-
-<p>
-  Like in <a href="#spec--check-of">check-of</a>,
-  each expression in either list should be <a href="https://standards.scheme.org/r7rs-html5/index.html#eval"><code>eval</code></a>-uatable in the current <a href="https://standards.scheme.org/r7rs-html5/index.html#interaction-environment"><code>(interaction-environment)</code></a>.
-</p>
-
-<pre>
-;; Example <a href="#spec--declare-checked">numbered-string function from before</a>
-(procedure-check-of numbered-string)
-;; =&gt; (<a href="https://standards.scheme.org/r7rs-html5/index.html#string?">string?</a> <a href="https://standards.scheme.org/r7rs-html5/index.html#integer?">integer?</a>), (string?)
-
-(procedure-check-of +)
-;; Rest argument not included
-;; =&gt; (), (<a href="https://standards.scheme.org/r7rs-html5/index.html#number?">number?</a>)
-
-(procedure-check-of <a href="https://standards.scheme.org/r7rs-html5/index.html#eval">eval</a>)
-;; Rest argument is ignored, fetch it elsewhere
-;; =&gt; ((constantly #t) (constantly #t)), ((constantly #t))
-
-(procedure-check-of procedure-check-of)
-;; (<a href="https://standards.scheme.org/r7rs-html5/index.html#procedure?">procedure?</a>), ((disjoin <a href="https://standards.scheme.org/r7rs-html5/index.html#boolean?">boolean?</a> <a href="https://standards.scheme.org/r7rs-html5/index.html#symbol?">symbol?</a> <a href="https://standards.scheme.org/r7rs-html5/index.html#pair?">pair?</a>) (disjoin boolean? symbol? pair?))
-</pre>
-
 <h3 id="spec--check-patterns">Optimizable check patterns / combinators</h3>
 
 <p>
@@ -404,18 +335,7 @@ Further symbol value modifications may be checked too.
   (syntax-rules ()
     ((_ (vars ...) (checks ...) form)
      (<a href="https://standards.scheme.org/r7rs-html5/index.html#define-values">define-values</a> (vars ...) form))))
-(define (<a href="#spec--check-of">check-of</a> datum)
-  #f)
-(define (<a href="#spec--procedure-check-of">procedure-check-of</a> proc)
-  (values #f #f))
-(define-syntax <a href="#spec--declare-checked">declare-checked</a>
-  (syntax-rules (=&gt;)
-    ((_ name predicate)
-     (<a href="https://standards.scheme.org/r7rs-html5/index.html#when">when</a> #f #f))
-    ((_ (name . args))
-     (when #f #f))
-    ((_ (name . args) =&gt; return)
-     (when #f #f))))
+
 </pre>
 
 <h2 id="acknowledgements">Acknowledgements</h2>
@@ -423,7 +343,7 @@ Further symbol value modifications may be checked too.
 <p>
   Thanks to Yukari Hafner for working on <code>trivial-arguments</code> Common Lisp library,
   where the author of this SRFI have contributed function type inspection,
-  inspiring <a href="#spec--procedure-check-of">procedure-check-of</a>.
+  inspiring (removed) <code>procedure-check-of</code>.
 </p>
 
 <p>
@@ -433,9 +353,10 @@ Further symbol value modifications may be checked too.
 
 <p>
   Thanks to John Cowan and Peter McGoron for the discussion on better
-  <a href="#spec--procedure-check-of">procedure-check-of</a>
-  and <a href="#spec--check-of">check-of</a>
+  <code>procedure-check-of</code>
+  and <code>check-of</code>
   (previously <code>derive-check</code>) design.
+  While all of these were removed, the discussion might serve future efforts.
 </p>
 
 <h2 id="copyright">Copyright</h2>
