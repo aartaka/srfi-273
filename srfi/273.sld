@@ -23,20 +23,9 @@
 ;;; OTHER DEALINGS IN THE SOFTWARE.
 
 (define-library (srfi 273)
-  (export declare-checked
-          define-check
-          derive-check
-
-          check-or?
-          check-and?
-          check-not?
-          check-eqv?
-          check-memv?
-          check-list-of?
-          check-vector-of?
-          check-pair-of?
-          check-procedure-of?
-          check-any?)
+  (export define-check
+          define-values-checked
+          declare-checked)
   (import (scheme base)
           (srfi 253))
   (include "impl.scm"))
