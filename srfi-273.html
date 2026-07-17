@@ -349,7 +349,14 @@ Further symbol value modifications may be checked too.
   (syntax-rules ()
     ((_ (vars ...) (checks ...) form)
      (<a href="https://standards.scheme.org/r7rs-html5/index.html#define-values">define-values</a> (vars ...) form))))
-
+(define-syntax <a href="#spec--declare-checked">declare-checked</a>
+  (syntax-rules ()
+    ((_ name predicate)
+     (<a href="https://standards.scheme.org/r7rs-html5/index.html#when">when</a> #f #f))
+    ((_ (name . args))
+     (when #f #f))
+    ((_ (name . args) => return)
+     (when #f #f))))
 </pre>
 
 <h2 id="acknowledgements">Acknowledgements</h2>
