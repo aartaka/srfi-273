@@ -37,9 +37,6 @@
           check-pair-of?
           check-procedure-of?
           check-any?)
-  (import (scheme base))
-  (cond-expand
-    (chibi
-     (import (chibi ast)))
-    (else))
+  (import (scheme base)
+          (srfi 253))
   (include "impl.scm"))
