@@ -70,4 +70,26 @@
 ;; (test-error (define-values-checked (a) (real? integer?) 3 8))
 (test-end "define-values-checked")
 
-;; Tests for declare-checked omitted as non-portable
+(define (hello x)
+  (string-append "Hello, " x "!"))
+
+(test-begin "declare-checked")
+;; Post-declaration for standard symbols
+(test-assert (begin
+               (declare-checked (negative? (x real?)) => (boolean?))
+               #t))
+(test-assert (begin
+               (declare-checked (call/cc (k procedure?)))
+               #t))
+;; Post-declaration for a new symbol.
+;; Uncomment if supported
+;; (test-assert (begin
+;;                (declare-checked (hello (k string?)) => (string?))
+;;                (hello "Stranger")))
+;; (test-error (begin
+;;                (declare-checked (hello (k string?)) => (integer?))
+;;                (hello "Stranger")))
+;; (test-error (begin
+;;                (declare-checked (hello (k string?)) => (string?))
+;;                (hello 5)))
+(test-end "declare-checked")
