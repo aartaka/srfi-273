@@ -29,8 +29,9 @@
 
 (define-syntax define-values-checked
   (syntax-rules ()
-    ((_ (vars ...) (checks ...) form)
-     (define-values (vars ...) form))))
+    ((_ (var ...) (check ...) form)
+     (define-values (var ...) form)
+     (check-arg check var 'define-values) ...)))
 
 (cond-expand
   (chicken
