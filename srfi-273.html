@@ -224,7 +224,7 @@ SPDX-License-Identifier: MIT
 
 <pre>
 ;; Declare checks for pre-existing standard functions
-(declare-checked (identity x) =&gt; ((constantly #t)))
+(declare-checked (negative? (x real?)) =&gt; (boolean?))
 
 ;; Declare the contract for a function before it is defined
 (declare-checked (numbered-string (str <a href="https://standards.scheme.org/r7rs-html5/index.html#string?">string?</a>) (idx <a href="https://standards.scheme.org/r7rs-html5/index.html#integer?">integer?</a>)) =&gt; (string?))
