@@ -86,7 +86,8 @@
         (when #f #f))))
    (define-syntax %declare-checked-fn/return
      (syntax-rules (: ->
-                      any? integer? boolean? char? complex?
+                      check-impl?
+                      integer? boolean? char? complex?
                       fixnum? flonum?
                       eof? inexact? real?
                       list? null? number? pair?
@@ -147,11 +148,14 @@
         (%declare-checked-fn/return name (arg-type ...) (return-type ... vector) other-returns ...))
        ((_ name (arg-type ...) (return-type ...) pointer? other-returns ...)
         (%declare-checked-fn/return name (arg-type ...) (return-type ... pointer) other-returns ...))
+       ((_ name (arg-type ...) (return-type ...) (check-impl? type) other-returns ...)
+        (%declare-checked-fn/return name (arg-type ...) (return-type ... type) other-returns ...))
        ((_ name (arg-type ...) (return-type ...) pred other-returns ...)
         (%declare-checked-fn/return name (arg-type ...) (return-type ... *) other-returns ...))))
    (define-syntax %declare-checked-fn
      (syntax-rules (: ->
-                      any? integer? boolean? char? complex?
+                      check-impl?
+                      integer? boolean? char? complex?
                       fixnum? flonum?
                       eof? inexact? real?
                       list? null? number? pair?
@@ -208,6 +212,8 @@
         (%declare-checked-fn name return (check ...) (type ... vector)))
        ((_ name return ((arg pointer?) check ...) (type ...))
         (%declare-checked-fn name return (check ...) (type ... pointer)))
+       ((_ name return ((arg (check-impl? impl-type)) check ...) (type ...))
+        (%declare-checked-fn name return (check ...) (type ... impl-type)))
        ((_ name return (arg check ...) (type ...))
         (%declare-checked-fn name return (check ...) (type ... *)))))
    (define-syntax declare-checked
