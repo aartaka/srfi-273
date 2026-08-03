@@ -29,27 +29,38 @@ SPDX-License-Identifier: MIT
     </ul>
 
 <h2 id="toc">Table of contents</h2>
-
-<ol>
-  <li><a href="#abstract">Abstract</a>
-  <li><a href="#rationale">Rationale</a>
-  <li><a href="#synopsis">Synopsis</a>
-  <li><a href="#specification">Specification</a>
-    <ol>
-      <li> <a href="#spec--return-value">Return value checking: (lambda-checked args [=&gt; predicate] body...), (case-lambda-checked ((args [=&gt; predicate] ...) body ...) ...), and (define-checked (name args ...) [=&gt; predicate] body ...)</a>
-      <li> <a href="#spec--check-case-arrow">Arrow clauses (predicate =&gt; procedure) in check-case</a>
-      <li> <a href="#spec--check-impl">auxiliary syntax (check-impl? datum)</a>
-      <li> <a href="#spec--define-check">(define-check name predicate)</a>
-      <li> <a href="#spec--declare-checked">(declare-checked name predicate) | (declare-checked (name (arg pred) ...) [=&gt; predicate])</a>
-      <li> <a href="#spec--define-values-checked">(srfi 273) (define-values-checked (vars ...) (checks ...) form)</a>
-      <li> <a href="#spec--check-patterns">Optimizable check patterns / combinators</a>
-    </ol>
+<ul>
+  <li><a href="#rationale">Rationale</a></li>
+  <li><a href="#synopsis">Synopsis</a></li>
+  <li>
+    <a href="#specification">Specification</a>
+    <ul>
+      <li><a href="#spec--return-value">Return value(s) checking: (srfi 253) (lambda-checked args [=> (predicate ...)] body...), (case-lambda-checked (args [=> (predicate ...)] body ...) ...), and (define-checked (name args ...) [=> (predicate ...)] body ...)</a></li>
+      <li><a href="#spec--check-case-arrow">Arrow clauses (predicate => procedure) in check-case</a></li>
+      <li><a href="#spec--check-impl">auxiliary syntax (check-impl? datum)</a></li>
+      <li><a href="#spec--define-check">(srfi 273) syntax (define-check name predicate)</a></li>
+      <li><a href="#spec--declare-checked">(srfi 273) syntax (declare-checked name predicate) | (declare-checked (name args ...) [=> (predicate ...)])</a></li>
+      <li><a href="#spec--define-values-checked">(srfi 273) syntax (define-values-checked (vars ...) (checks ...) form)</a></li>
+      <li>
+        <a href="#spec--check-patterns">Optimizable check patterns / combinators</a>
+        <ul>
+          <li><a href="#spec--check-patterns--disjoin">(srfi 235) (disjoin pred ...)</a></li>
+          <li><a href="#spec--check-patterns--conjoin">(srfi 235) (conjoin pred ...)</a></li>
+          <li><a href="#spec--check-patterns--complement">(srfi 235) (complement pred)</a></li>
+          <li><a href="#spec--check-patterns--member">(srfi 26 + r7rs) (cut memv &lt;> '(items ...)) or (cut memv &lt;> (list items ...))</a></li>
+          <li><a href="#spec--check-patterns--equal">(srfi 26 + r7rs) (cut eqv? &lt;> constant)</a></li>
+          <li><a href="#spec--check-patterns--list-of">(srfi 26 + srfi 1) (cut every pred &lt;>)</a></li>
+          <li><a href="#spec--check-patterns--vector-of">(srfi 26 + srfi 43) (cut vector-every pred &lt;>)</a></li>
+          <li><a href="#spec--check-patterns--any-none">(srfi 235) (constantly #t) and (constantly #f)</a></li>
+          <li><a href="#spec--check-patterns--dependent-types">Dependent types</a></li>
+        </ul>
+      </li>
+    </ul>
   </li>
-  <li> <a href="#implementation">Implementation</a>
-  </li>
-  <li> <a href="#acknowledgements">Acknowledgements</a>
-  <li> <a href="#copyright">Copyright</a>
-</ol>
+  <li><a href="#implementation">Implementation</a></li>
+  <li><a href="#acknowledgements">Acknowledgements</a></li>
+  <li><a href="#copyright">Copyright</a></li>
+</ul>
 
 <h2 id="abstract">Abstract</h2>
 
