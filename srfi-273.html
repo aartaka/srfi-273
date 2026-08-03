@@ -136,8 +136,8 @@ SPDX-License-Identifier: MIT
 </p>
 
 <p>
-  Implementations supporting this SRFI must support return-value checking via a <code>=&gt;</code> operator in procedure-creating checking forms.
-  <code>lambda-checked</code>, <code>case-lambda-checked</code> (whenever available,) and <code>define-checked</code> procedure form, in particular.
+  Implementations supporting this SRFI must support return-value checking via a <code>=&gt;</code> operator in procedure-creating checking forms, in particular the
+  <code>lambda-checked</code>, <code>case-lambda-checked</code> (whenever available), and <code>define-checked</code> procedure forms.
   This operator should be followed by a parenthesized list of predicates checking the return value(s).
   (Note that parentheses are not optional, like in
   <a href="https://srfi.schemers.org/srfi-253/srfi-253.html#spec--values-checked">SRFI-253 value-checked</a>).
@@ -237,10 +237,10 @@ SPDX-License-Identifier: MIT
 </pre>
 
 <p>
-  Previous version of SRFI document used <code>declare-checked</code> only listing types without argument names.
-  Argument names were added because there’s a descriptive function to <code>declare-checked</code>.
-  To make fellow programmer’s codebase exploration easier.
-  Without the need to consult procedure definition in addition to <code>declare-checked</code> signature.
+  A previous version of this SRFI document used <code>declare-checked</code> only listing types without argument names.
+  Argument names were added because there’s a descriptive function to <code>declare-checked</code>:
+  to make fellow programmers’ codebase exploration easier,
+  without the need to consult procedure definitions in addition to <code>declare-checked</code> signatures.
 </p>
 
 <h3 id="spec--define-values-checked">(srfi 273) syntax (define-values-checked (vars ...) (checks ...) form) <a href="#spec--define-values-checked">#</a></h3>
@@ -342,7 +342,7 @@ Further symbol value modifications may be checked too.
 <h2 id="implementation">Implementation</h2>
 
 <p>
-  Find the sample implementation for return value checking in <a href="https://github.com/scheme-requests-for-implementation/srfi-253">SRFI 253 repository</a>.
+  Find the sample implementation for return value checking in the <a href="https://github.com/scheme-requests-for-implementation/srfi-253">SRFI 253 repository</a>.
   It is also contributed to most existing SRFI 253 implementations
   (<a href="https://gitlab.com/ThatGeoGuy/srfi-253/-/merge_requests/6">Chicken</a>,
   <a href="https://github.com/ashinn/chibi-scheme/pull/1107">Chibi</a>,
