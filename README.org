@@ -11,7 +11,7 @@ keywords: [[https://srfi.schemers.org/?keywords=type-checking][Type Checking]]
 
 This repository hosts [[https://srfi.schemers.org/srfi-273/][SRFI 273]]: Extensions to Data (Type-)Checking, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
 
-This SRFI is in /draft/ status.
+This SRFI is in /final/ status.
 See also [[/srfi-253/][SRFI 253: Data (Type-)Checking]].
 The full documentation for this SRFI can be found in the [[https://srfi.schemers.org/srfi-273/srfi-273.html][SRFI Document]].
 
