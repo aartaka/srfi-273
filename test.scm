@@ -23,6 +23,8 @@
 ;;; OTHER DEALINGS IN THE SOFTWARE.
 
 (import (scheme base))
+(import (scheme eval))
+(import (scheme repl))
 (import (srfi 64))
 (import (srfi 253))
 (import (srfi 273))
@@ -61,6 +63,11 @@
                 (truncate/ 1 2))
               #t))
 (test-error (define-values-checked (a) (string?) 3))
+;; Ensure that symbols are not bound on type mismatch
+(define-values-checked (x y) (integer? string?)
+  (truncate/ 1 2))
+(test-error (eval 'x (interaction-environment)))
+(test-error (eval 'y (interaction-environment)))
 ;; Test modifications, on implementations supporting that
 ;; (test-error (set! quot "not an integer"))
 ;; Syntax checks
